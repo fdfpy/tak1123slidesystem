@@ -16,16 +16,24 @@ namespace VRCLT
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class SlidePlayer : UdonSharpBehaviour
     {
-        [UdonSynced] [FieldChangeCallback(nameof(URL))]
-        VRCUrl _syncedURL;
+        [UdonSynced] [FieldChangeCallback(nameof(URL))] VRCUrl _syncedURL;
+        [UdonSynced] [FieldChangeCallback(nameof(Page))]private int _syncedPage;
+        [UdonSynced] [FieldChangeCallback(nameof(Cont0))] private bool _cont0=true;
 
-        [UdonSynced] [FieldChangeCallback(nameof(Page))]
-        private int _syncedPage;
-        public int  AllPagenum;
+
+        public float  AllPagenum;
         [UdonSynced(UdonSyncMode.None), FieldChangeCallback(nameof(allpagenum))] private float _allpagenum;
+        [UdonSynced(UdonSyncMode.None), FieldChangeCallback(nameof(Endpage))] private float _endpage;
         public VRCUrl seturl;
         public Text Allpage,Nowpage;
+        public VRCUrlInputField inputField;
+        public Text statusText,seigyo0Text;
 
+
+        public VRCUnityVideoPlayer unityVideoPlayer;
+
+        public float timeSpan = 1f;
+        private float timeOffset = 0.1f; 
 
         private VRCUrl URL
         {
@@ -59,20 +67,31 @@ namespace VRCLT
             }
         }
 
+        private bool Cont0
+        {
+            get => _cont0;
+            set
+            {
+                _cont0 = value; //valueキーワードが使用でき、これにアクセス元から渡された値が格納されています。
+                DisplaySeigyo0();
+            }
+        }
+
+
+        private float Endpage
+        {
+            get => _endpage;
+            set
+            {
+                _endpage = value; //valueキーワードが使用でき、これにアクセス元から渡された値が格納されています。
+                DisplayEndpage();
+            }
+        }
 
 
 
 
 
-
-
-        public VRCUrlInputField inputField;
-        public Text statusText;
-
-        public VRCUnityVideoPlayer unityVideoPlayer;
-
-        public float timeSpan = 1f;
-        private float timeOffset = 0.1f;
 
         public void OnTakeOwnershipClicked()
         {
@@ -119,7 +138,11 @@ namespace VRCLT
             if (Networking.IsOwner(gameObject))
             {
                 Debug.Log("OnNextSlideButtonClick as owner");
-                if (Page < AllPagenum)
+
+        
+
+
+                if (Page < Endpage)
                 {
                     Page++;
                     RequestSerialization();
@@ -185,12 +208,50 @@ namespace VRCLT
                 statusText.text = "Video ready. click \"next\" on control panel to start presentation.";
                
                 allpagenum = unityVideoPlayer.GetDuration(); //動画の全再生時間を取得する。
-                Allpage.text = allpagenum.ToString();
+                Endpage = AllPagenum;
+                //Allpage.text = allpagenum.ToString();
 
 
 
             }
         }
+
+
+        public void Sengyo0()
+        {
+            if (Networking.IsOwner(gameObject)) 
+                {
+                Cont0 = !Cont0;
+                RequestSerialization();
+                Endpage = Cont0 ? AllPagenum : allpagenum;  //Cont0 =Trueならば AllPagenum(外部から与えたページ数)を使う、 Cont0=Falseならば allpagenum(動画の長さを自動で読み取った数値)を使う
+                RequestSerialization();
+
+            }
+        }
+
+
+        public void DisplaySeigyo0()
+        {
+            if (Cont0 == true)
+            {
+                seigyo0Text.text = "手動入力";    // データ表示更新
+            }
+            else if(Cont0 == false)
+            {
+                seigyo0Text.text = "自動入力";    // データ表示更新
+            }
+
+
+
+        }
+
+
+        // 同期変数の値をUIに表示する処理
+        public void DisplayEndpage()
+        {
+            Allpage.text = Endpage.ToString();    // データ表示更新
+        }
+
 
 
         // 同期変数の値をUIに表示する処理
