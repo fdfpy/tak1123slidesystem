@@ -15,6 +15,6 @@ HirararchyのLTSYS/Quadを選択します。
 
 ![image](https://user-images.githubusercontent.com/15305650/184135774-0cb289d5-d7dd-48da-846c-4ca88a25536f.png)
 
-
+Utilitiesの変数が下記の画面のようにセッティングされていることを確認してください。なお①All Pagenumはスライドの総ページ数を入力してください。②Seturlには表示したい動画のURLを入力します。その他の変数は下記画面の通りにもともとセッティングされていることを確認してください。
 ![image](https://user-images.githubusercontent.com/15305650/184136485-1a25a0ea-3a1a-41ad-adcc-594a150f7be7.png)
 
