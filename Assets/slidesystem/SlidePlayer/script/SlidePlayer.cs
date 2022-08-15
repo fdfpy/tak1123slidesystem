@@ -92,7 +92,28 @@ namespace VRCLT
         //****** (3) 各種メソッドを定義する。 *********
 
 
+        //ReSyncを行う
+        public void ReSync()
+        {
+            //Networking.SetOwner(Networking.LocalPlayer, gameObject); //ゲームオブジェクトの所有権をボタンをクリックしたユーザーに移す
+            VRCUrl url;
+            url = inputField.GetUrl();
 
+
+            if (url.ToString() == "")
+            {
+                url = seturl;
+            }
+
+            if (url != null)
+            {
+                Debug.Log("OnURLChanged url: " + url.ToString());
+                statusText.text = "Resync...";
+                unityVideoPlayer.LoadURL(URL);
+            
+                //RequestSerialization();
+            }
+        }
 
 
 
