@@ -92,6 +92,11 @@ namespace VRCLT
         //****** (3) 各種メソッドを定義する。 *********
 
 
+
+
+
+
+
         //オブジェクトの操作権限を取得する。
         public void OnTakeOwnershipClicked()
         {
